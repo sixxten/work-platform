@@ -1,0 +1,12 @@
+{
+    "port": 5000,
+    "jwtSecret": "siujmakeelq91025",
+    "jwtRefreshSecret": "mloutttrkoup22",
+    "database": {
+        "name": "",
+        "user": "",
+        "password": "",
+        "host": "",
+        "port": 5432
+    }
+}
