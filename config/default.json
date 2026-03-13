@@ -3,10 +3,10 @@
     "jwtSecret": "siujmakeelq91025",
     "jwtRefreshSecret": "mloutttrkoup22",
     "database": {
-        "name": "",
-        "user": "",
-        "password": "",
-        "host": "",
-        "port": 5432
+        "name": "platform_db",
+        "user": "postgres",
+        "password": "secret",
+        "host": "localhost",
+        "port": 5433
     }
 }

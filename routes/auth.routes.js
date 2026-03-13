@@ -1,6 +1,6 @@
 const { Router } = require('express')
 const jwt = require("jsonwebtoken")
-const bcrypt = require("bcrypt")
+const bcrypt = require("bcryptjs")
 const config = require("config")
 const { check, validationResult } = require("express-validator")
 const User = require("../models/User")
@@ -190,3 +190,7 @@ router.post('/logout', async (req, res) => {
         res.status(500).json({ message: "Logout error", error: e.message })
     }
 })
+
+
+
+module.exports = router

@@ -29,8 +29,4 @@ const RefreshToken = sequelize.define('RefreshToken', {
     timestamps: true
 })
 
-
-User.hasMany(RefreshToken, { foreignKey: 'userId' })
-RefreshToken.belongsTo(User, { foreignKey: 'userId' })
-
 module.exports = RefreshToken
