@@ -1,21 +1,12 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import AuthPage from './pages/AuthPage';
+import { BrowserRouter } from 'react-router-dom';
+import AppRouter from './components/AppRouter';
 
 function App() {
-  // Проверяем, есть ли токен
-  const isAuthenticated = !!localStorage.getItem('token');
-
-  return (
-    <BrowserRouter>
-      <Routes>
-        <Route 
-          path="/" 
-          element={isAuthenticated ? <div>Главная</div> : <AuthPage />} 
-        />
-        <Route path="/login" element={<AuthPage />} />
-      </Routes>
-    </BrowserRouter>
-  );
+    return (
+        <BrowserRouter>
+            <AppRouter />
+        </BrowserRouter>
+    );
 }
 
 export default App;
