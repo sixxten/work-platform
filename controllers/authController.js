@@ -12,8 +12,8 @@ class AuthController {
                 })
             }
             
-            const { email, password } = req.body
-            const userData = await userService.registration(email, password)
+            const { email, password, role } = req.body
+            const userData = await userService.registration(email, password, role)
 
             res.cookie('refreshToken', userData.refreshToken, {
                 httpOnly: true,

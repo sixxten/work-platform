@@ -3,7 +3,7 @@ const User = require('../models/User')
 const tokenService = require('./tokenService')
 
 class UserService {
-    async registration(email, password) {
+    async registration(email, password, role = 'student') {
         const currUser = await User.findOne({ where: { email } })
         if (currUser) {
             throw new Error('User already exists')
@@ -13,7 +13,7 @@ class UserService {
         const user = await User.create({
             email,
             password: hashedPassword,
-            role: 'student'
+            role: role
         })
 
         const payload = {

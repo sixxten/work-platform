@@ -7,6 +7,7 @@ const router = Router()
 router.post('/register',
     body('email').isEmail(),
     body('password').isLength({ min: 6, max: 32 }),
+    body('role').optional().isIn(['student', 'employer']),
     authController.register
 )
 

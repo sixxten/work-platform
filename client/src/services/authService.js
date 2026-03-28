@@ -1,9 +1,8 @@
-// client/src/services/authService.js
 import { $host, $authHost } from '../http';
 
 class AuthService {
-    async register(email, password) {
-        const { data } = await $host.post('/auth/register', { email, password });
+    async register(email, password, role) {
+        const { data } = await $host.post('/auth/register', { email, password, role });
         return data;
     }
 

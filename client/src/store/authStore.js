@@ -1,21 +1,3 @@
-// client/src/store/authStore.js
-// Это ящик с данными. Каждый раз происходит вот это:
-//  user: null → {id:1, email:...},  1. Появился пользователь
-//     isAuth: false → true,              2. Статус авторизации
-//     isLoading: false → true → false   3. Состояние загрузки
-// 1. Страница загружается
-//    ↓
-// 2. Создается НОВЫЙ экземпляр AuthStore (new AuthStore())
-//    ↓
-// 3. Вызывается constructor()
-//    ↓
-// 4. Запускается this.checkAuth()
-//    ↓
-// 5. checkAuth() смотрит в localStorage: есть токен?
-//    ↓
-// 6. Если токен есть → isAuth = true, загружаем пользователя
-//    ↓
-// 7. Если токена нет → isAuth = false
 import { makeAutoObservable } from 'mobx';
 import authService from '../services/authService';
 
@@ -45,7 +27,6 @@ export default class AuthStore {
         this.setLoading(true);
         try {
             const data = await authService.login(email, password);
-            console.log('📦 Данные от сервера:', data);  // посмотрим что приходит
             this.setAuth(true);
             this.setUser(data.user);
             localStorage.setItem('accessToken', data.accessToken);
@@ -60,10 +41,10 @@ export default class AuthStore {
         }
     }
 
-    async register(email, password) {
+    async register(email, password, role) {
         this.setLoading(true);
         try {
-            const data = await authService.register(email, password);
+            const data = await authService.register(email, password, role);
             return { success: true, userId: data.userId };
         } catch (e) {
             return { 

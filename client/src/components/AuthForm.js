@@ -1,4 +1,3 @@
-// client/src/components/AuthForm.js
 import { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Context } from '../index';
@@ -8,6 +7,7 @@ const AuthForm = () => {
     const { auth } = useContext(Context);
     const navigate = useNavigate();
     const [email, setEmail] = useState('');
+    const [role, setRole] = useState('student');
     const [password, setPassword] = useState('');
     const [isLogin, setIsLogin] = useState(true);
     const [error, setError] = useState('');
@@ -23,10 +23,9 @@ const AuthForm = () => {
                 navigate('/profile');
             }
         } else {
-            result = await auth.register(email, password);
+            result = await auth.register(email, password, role);
             
             if (result.success) {
-                // Если регистрация успешна, переключаем на логин
                 setIsLogin(true);
                 setEmail('');
                 setPassword('');
@@ -61,6 +60,28 @@ const AuthForm = () => {
                         minLength={6}
                     />
                 </div>
+                 {!isLogin && (
+                    <div style={{ marginBottom: '15px' }}>
+                        <label style={{ marginRight: '20px' }}>
+                            <input
+                                type="radio"
+                                value="student"
+                                checked={role === 'student'}
+                                onChange={(e) => setRole(e.target.value)}
+                            />
+                            Студент
+                        </label>
+                        <label>
+                            <input
+                                type="radio"
+                                value="employer"
+                                checked={role === 'employer'}
+                                onChange={(e) => setRole(e.target.value)}
+                            />
+                            Работодатель
+                        </label>
+                    </div>
+                )}
                 {error && <p style={{color: 'red'}}>{error}</p>}
                 <button type="submit" disabled={auth.isLoading}>
                     {auth.isLoading ? 'Загрузка...' : (isLogin ? 'Войти' : 'Зарегистрироваться')}

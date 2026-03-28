@@ -11,6 +11,17 @@ const UserProfilePage = observer(() => {
     const handleLogout = async () => {
         await auth.logout();
         navigate('/login');
+    }
+    const getRoleText = (role) => {
+        switch(role) {
+            case 'student':
+                return 'Студент';
+            case 'employer':
+                return 'Работодатель';
+            default:
+                return 'error';
+        }
+    
     };
     return (
         <div style={{ padding: '20px' }}>
@@ -19,7 +30,7 @@ const UserProfilePage = observer(() => {
             {auth.user ? (
                 <div style={{ marginBottom: '20px' }}>
                     <p><strong>Email:</strong> {auth.user.email}</p>
-                    <p><strong>Роль:</strong> {auth.user.role}</p>
+                    <p><strong>Роль:</strong> {getRoleText(auth.user.role)}</p>
                     <p><strong>ID:</strong> {auth.user.id}</p>
                 </div>
             ) : (
