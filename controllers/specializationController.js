@@ -1,10 +1,8 @@
-const employmentTypeService = require('../services/employmentTypeService');
 const specializationService = require('../services/specializationService');
-const workFormatService = require('../services/workFormatService');
 
 class EmploymentTypeController {
     // GET /api/specializations
-    async getAll(res) {
+    async getAll(req, res) {
         try {
             const items = await specializationService.getAll();
             res.json(items);

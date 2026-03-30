@@ -5,11 +5,12 @@ import AuthStore from './store/authStore';
 
 export const Context = createContext(null);
 
+const auth = new AuthStore();
+
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-    <Context.Provider value={{
-        auth: new AuthStore()
-    }}>
+    <Context.Provider value={{ auth }}>
         <App />
     </Context.Provider>
 );
+

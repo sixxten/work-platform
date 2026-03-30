@@ -2,7 +2,7 @@ const employmentTypeService = require('../services/employmentTypeService');
 
 class EmploymentTypeController {
     // GET /api/employment-types
-    async getAll(req,res) {
+    async getAll(req, res) {
         try {
             const items = await employmentTypeService.getAll();
             res.json(items);

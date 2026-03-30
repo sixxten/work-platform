@@ -10,7 +10,7 @@ const UserProfilePage = observer(() => {
 
     const handleLogout = async () => {
         await auth.logout();
-        navigate('/login');
+        navigate('/');
     }
     const getRoleText = (role) => {
         switch(role) {
@@ -19,7 +19,7 @@ const UserProfilePage = observer(() => {
             case 'employer':
                 return 'Работодатель';
             default:
-                return 'error';
+                return 'admin';
         }
     
     };
@@ -34,7 +34,7 @@ const UserProfilePage = observer(() => {
                     <p><strong>ID:</strong> {auth.user.id}</p>
                 </div>
             ) : (
-                <p style={{ color: 'orange' }}>Загрузка данных пользователя...</p>
+                <p>Ошибка</p>
             )}
             
             <button 

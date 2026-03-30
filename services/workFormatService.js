@@ -1,4 +1,4 @@
-const { WorkFormat } = require('../models/WorkFormat');
+const  WorkFormat  = require('../models/WorkFormat');
 
 class WorkFormatService {
     async getAll() {

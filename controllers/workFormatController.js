@@ -1,9 +1,8 @@
-const employmentTypeService = require('../services/employmentTypeService');
 const workFormatService = require('../services/workFormatService');
 
 class EmploymentTypeController {
     // GET /api/work-formats
-    async getAll(res) {
+    async getAll(req, res) {
         try {
             const items = await workFormatService.getAll();
             res.json(items);

@@ -4,11 +4,10 @@ import authService from '../services/authService';
 export default class AuthStore {
     user = null;
     isAuth = false;
-    isLoading = false;
+    isLoading = true;
 
     constructor() {
         makeAutoObservable(this);
-        this.checkAuth();
     }
 
     setAuth(bool) {
@@ -27,9 +26,12 @@ export default class AuthStore {
         this.setLoading(true);
         try {
             const data = await authService.login(email, password);
-            this.setAuth(true);
-            this.setUser(data.user);
             localStorage.setItem('accessToken', data.accessToken);
+            const userData = await authService.getProfile();
+
+            this.setAuth(true);
+            this.setUser(userData);
+
             return { success: true };
         } catch (e) {
             return { 
@@ -69,15 +71,16 @@ export default class AuthStore {
     }
 
     async checkAuth() {
-        const token = localStorage.getItem('accessToken');
-        if (token) {
-            try {
-                const data = await authService.getProfile();
-                this.setAuth(true);
-                this.setUser(data);
-            } catch (e) {
-                localStorage.removeItem('accessToken');
-            }
+    const token = localStorage.getItem('accessToken');
+    if (token) {
+        try {
+        const data = await authService.getProfile();
+        this.setUser(data);
+        this.setAuth(true);
+        } catch (e) {
+        localStorage.removeItem('accessToken');
         }
+    }
+    this.setLoading(false);
     }
 }

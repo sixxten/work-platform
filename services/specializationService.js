@@ -1,4 +1,4 @@
-const { Specialization } = require('../models/Specialization');
+const  Specialization  = require('../models/Specialization');
 
 class SpecializationService {
     async getAll() {
