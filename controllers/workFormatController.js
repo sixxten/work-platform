@@ -5,7 +5,7 @@ class EmploymentTypeController {
     async getAll(req, res) {
         try {
             const items = await workFormatService.getAll();
-            res.json(items);
+            res.status(200).json(items);
         } catch (e) {
             res.status(500).json({ message: e.message });
         }
@@ -15,13 +15,13 @@ class EmploymentTypeController {
     async getById(req, res) {
         try {
             const item = await workFormatService.getById(req.params.id);
-            res.json(item);
+            res.status(200).json(item);
         } catch (e) {
             res.status(404).json({ message: e.message });
         }
     }
 
-    // POST /api/work-formats (admin/moderator only)
+    // POST /api/work-formats
     async create(req, res) {
         try {
             const item = await workFormatService.create(req.body);
@@ -31,21 +31,21 @@ class EmploymentTypeController {
         }
     }
 
-    // PUT 	/api/work-formats/:id (admin/moderator only)
+    // PUT 	/api/work-formats/:id
     async update(req, res) {
         try {
             const item = await workFormatService.update(req.params.id, req.body);
-            res.json(item);
+            res.status(200).json(item);
         } catch (e) {
             res.status(400).json({ message: e.message });
         }
     }
 
-    // DELETE /api/work-formats/:id (admin/moderator only)
+    // DELETE /api/work-formats/:id 
     async delete(req, res) {
         try {
             const result = await workFormatService.delete(req.params.id);
-            res.json(result);
+            res.status(200).json(result);
         } catch (e) {
             res.status(400).json({ message: e.message });
         }

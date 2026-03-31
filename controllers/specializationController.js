@@ -21,7 +21,7 @@ class EmploymentTypeController {
         }
     }
 
-    // POST /api/specializations (admin/moderator only)
+    // POST /api/specializations
     async create(req, res) {
         try {
             const item = await specializationService.create(req.body);
@@ -31,21 +31,21 @@ class EmploymentTypeController {
         }
     }
 
-    // PUT 	/api/specializations/:id (admin/moderator only)
+    // PUT 	/api/specializations/:id
     async update(req, res) {
         try {
             const item = await specializationService.update(req.params.id, req.body);
-            res.json(item);
+            res.status(200).json(item);
         } catch (e) {
             res.status(400).json({ message: e.message });
         }
     }
 
-    // DELETE /api/specializations/:id (admin/moderator only)
+    // DELETE /api/specializations/:id
     async delete(req, res) {
         try {
             const result = await specializationService.delete(req.params.id);
-            res.json(result);
+            res.status(200).json(result);
         } catch (e) {
             res.status(400).json({ message: e.message });
         }

@@ -1,11 +1,7 @@
-// vacancyService.js
 const Vacancy = require("../models/Vacancy");
 const EmploymentType = require("../models/EmploymentType");
 const WorkFormat = require("../models/WorkFormat");
 const Specialization = require("../models/Specialization");
-
-// ВАЖНО: установить связи (ассоциации) один раз
-// чтобы Sequelize знал, как join'ить таблицы
 
 Vacancy.belongsTo(EmploymentType, {
   foreignKey: "employmentTypeId",
@@ -21,21 +17,18 @@ Vacancy.belongsTo(Specialization, {
 });
 
 class VacancyService {
-  // Получить список вакансий
+
   async getAll(filters = {}, userRole, userId) {
     const where = {};
 
-    // если студент — только активные
     if (userRole === "student") {
       where.status = "active";
     }
 
-    // если работодатель — только свои
     if (userRole === "employer") {
       where.employerId = userId;
     }
 
-    // дополнительные фильтры
     if (filters.employmentTypeId) {
       where.employmentTypeId = filters.employmentTypeId;
     }
@@ -46,7 +39,6 @@ class VacancyService {
       where.specializationId = filters.specializationId;
     }
 
-    // возвращаем вакансии с JOIN'ами
     return await Vacancy.findAll({
       where,
       order: [["createdAt", "DESC"]],
@@ -58,7 +50,6 @@ class VacancyService {
     });
   }
 
-  // Получить вакансию по ID
   async getById(id, userRole, userId) {
     const vacancy = await Vacancy.findByPk(id, {
       include: [
@@ -87,7 +78,6 @@ class VacancyService {
     return vacancy;
   }
 
-  // Создать вакансию (только employer или admin)
   async create(data, employerId) {
     const vacancyData = {
       ...data,
@@ -96,7 +86,6 @@ class VacancyService {
     return await Vacancy.create(vacancyData);
   }
 
-  // Обновить вакансию (только владелец или admin)
   async update(id, data, userId, userRole) {
     const vacancy = await Vacancy.findByPk(id);
     if (!vacancy) {
@@ -111,7 +100,6 @@ class VacancyService {
     return vacancy;
   }
 
-  // Удалить вакансию (только владелец или admin)
   async delete(id, userId, userRole) {
     const vacancy = await Vacancy.findByPk(id);
     if (!vacancy) {
@@ -126,7 +114,6 @@ class VacancyService {
     return { message: "Vacancy deleted successfully" };
   }
 
-  // Получить вакансии работодателя (для профиля)
   async getByEmployer(employerId, userRole, requesterId) {
     if (userRole === "employer" && employerId !== requesterId) {
       throw new Error("You can only view your own vacancies");

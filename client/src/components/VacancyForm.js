@@ -63,7 +63,6 @@ function VacancyForm({ onSuccess }) {
       setLoading(true);
       await vacancyService.create(vacancyData);
 
-      // очистка формы
       setTitle("");
       setDescription("");
       setSalary("");
@@ -124,7 +123,6 @@ function VacancyForm({ onSuccess }) {
         style={{ display: "block", marginBottom: 10, width: "100%" }}
       />
 
-      {/* выпадающие списки */}
       <label>Формат работы:</label>
       <select
         value={workFormatId}

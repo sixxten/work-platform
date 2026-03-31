@@ -9,7 +9,6 @@ function MyVacanciesPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  // загрузка вакансий работодателя
   const loadVacancies = async () => {
     try {
       setLoading(true);

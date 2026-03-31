@@ -9,7 +9,7 @@ class VacancyController {
             const userId = req.user?.userId;
             
             const vacancies = await vacancyService.getAll(filters, userRole, userId);
-            res.json(vacancies);
+            res.status(200).json(vacancies);
         } catch (e) {
             res.status(500).json({ message: e.message });
         }
@@ -23,7 +23,7 @@ class VacancyController {
                 req.user?.role,
                 req.user?.userId
             );
-            res.json(vacancy);
+            res.status(200).json(vacancy);
         } catch (e) {
             res.status(404).json({ message: e.message });
         }
@@ -48,7 +48,7 @@ class VacancyController {
                 req.user.userId,
                 req.user.role
             );
-            res.json(vacancy);
+            res.status(200).json(vacancy);
         } catch (e) {
             res.status(400).json({ message: e.message });
         }
@@ -62,7 +62,7 @@ class VacancyController {
                 req.user.userId,
                 req.user.role
             );
-            res.json(result);
+            res.status(200).json(result);
         } catch (e) {
             res.status(400).json({ message: e.message });
         }
@@ -77,7 +77,7 @@ class VacancyController {
                 req.user?.role,
                 req.user?.userId
             );
-            res.json(vacancies);
+            res.status(200).json(vacancies);
         } catch (e) {
             res.status(500).json({ message: e.message });
         }
@@ -93,7 +93,7 @@ class VacancyController {
                 req.user.userId,
                 req.user.role
             );
-            res.json(vacancy);
+            res.status(200).json(vacancy);
         } catch (e) {
             res.status(400).json({ message: e.message });
         }

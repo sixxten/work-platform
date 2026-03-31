@@ -5,14 +5,13 @@ const roleMiddleware = require('../middleware/roleMiddleware');
 
 const router = Router();
 
-router.get('/', vacancyController.getAll);      // получить все активные вакансии
-router.get('/:id', vacancyController.getById);  // получить одну вакансию по id
+router.get('/', vacancyController.getAll);
+router.get('/:id', vacancyController.getById);
 
 router.use(authMiddleware);
 
 router.get('/employer/:employerId', vacancyController.getByEmployer);
 
-// 🔒 Для работодателей и админов
 router.post(
   '/',
   roleMiddleware(['employer', 'admin']),

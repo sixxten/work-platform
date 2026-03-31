@@ -13,16 +13,21 @@ const AppRouter = observer(() => {
 
    if (auth.isLoading) return null;
 
+
+   const canViewEmployerVacancies = auth.isAuth && (auth.user?.role === 'employer' || auth.user?.role === 'admin');
+
   return (
     <Routes>
       <Route path="/" element={<Main />} />
       <Route path="/login" element={!auth.isAuth ? <AuthPage /> : <Navigate to="/profile" />} />
+      <Route path="/vacancies/:id" element={<VacancyPage />} />
 
       {auth.isAuth && (
         <>
           <Route path="/profile" element={<UserProfilePage />} />
-          <Route path="/vacancies" element={<MyVacanciesPage />} />
-          <Route path="/vacancies/:id" element={<VacancyPage />} />
+           {canViewEmployerVacancies && (
+            <Route path="/vacancies" element={<MyVacanciesPage />} />
+          )}
         </>
       )}
 

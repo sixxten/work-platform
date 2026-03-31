@@ -1,4 +1,3 @@
-// client/src/store/vacancyStore.js
 import { makeAutoObservable } from 'mobx';
 import vacancyService from '../services/vacancyService';
 
@@ -11,7 +10,6 @@ class VacancyStore {
         makeAutoObservable(this);
     }
 
-    // Загрузить мои вакансии
     async fetchMyVacancies() {
         this.isLoading = true;
         this.error = null;
@@ -26,7 +24,6 @@ class VacancyStore {
         }
     }
 
-    // Создать вакансию
     async createVacancy(vacancyData) {
         this.isLoading = true;
         this.error = null;
@@ -42,7 +39,6 @@ class VacancyStore {
         }
     }
 
-    // Удалить вакансию
     async deleteVacancy(id) {
         this.isLoading = true;
         try {
