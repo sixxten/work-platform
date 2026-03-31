@@ -2,13 +2,17 @@ import React, { useEffect, useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { Context } from "../index";
 import vacancyService from "../services/vacancyService";
-import VacancyMainCard from "../components/VacancyMainCard"; // новый компонент
+import VacancyMainCard from "../components/VacancyMainCard";
+import notificationService from "../services/notificationService";
+import NotificationsModal from "../components/NotificationsModal";
 
 const Main = () => {
   const [vacancies, setVacancies] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const { auth } = useContext(Context);
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0);
 
   useEffect(() => {
     const fetchVacancies = async () => {
@@ -21,9 +25,24 @@ const Main = () => {
         setLoading(false);
       }
     };
-
     fetchVacancies();
   }, []);
+
+  useEffect(() => {
+    const fetchUnreadCount = async () => {
+      if (auth.isAuth) {
+        try {
+          const data = await notificationService.getUnreadCount();
+          setUnreadCount(data.count);
+        } catch (err) {
+          console.error(err);
+        }
+      }
+    };
+    fetchUnreadCount();
+    const interval = setInterval(fetchUnreadCount, 30000);
+    return () => clearInterval(interval);
+  }, [auth.isAuth]);
 
   const handleProfileClick = () => {
     if (!auth.isAuth) navigate("/login");
@@ -38,6 +57,7 @@ const Main = () => {
           display: "flex",
           gap: "10px",
           justifyContent: "center",
+          alignItems: "center",
         }}
       >
         <button
@@ -71,17 +91,49 @@ const Main = () => {
             Мои вакансии
           </button>
         )}
+
+        {auth.isAuth && (
+          <button
+            onClick={() => setShowNotifications(true)}
+            style={{
+              padding: "10px 20px",
+              fontSize: "16px",
+              cursor: "pointer",
+              backgroundColor: "#6c757d",
+              color: "#fff",
+              border: "none",
+              borderRadius: "5px",
+              position: "relative",
+            }}
+          >
+            Уведомления
+            {unreadCount > 0 && (
+              <span
+                style={{
+                  position: "absolute",
+                  top: "-5px",
+                  right: "-5px",
+                  backgroundColor: "red",
+                  color: "white",
+                  borderRadius: "50%",
+                  padding: "2px 6px",
+                  fontSize: "12px",
+                }}
+              >
+                {unreadCount}
+              </span>
+            )}
+          </button>
+        )}
       </div>
 
-      <h1 style={{ textAlign: "center", marginBottom: "30px", color: "#333" }}>
-        Активные вакансии
-      </h1>
+      <h1 style={{ textAlign: "center", marginBottom: "30px", color: "#333" }}>Вакансии</h1>
 
       {loading ? (
         <div style={{ textAlign: "center", marginTop: 50 }}>Загрузка...</div>
       ) : vacancies.length === 0 ? (
         <div style={{ textAlign: "center", marginTop: 50 }}>
-          Активных вакансий нет
+          Нет вакансий
         </div>
       ) : (
         <div
@@ -102,6 +154,10 @@ const Main = () => {
             />
           ))}
         </div>
+      )}
+
+      {showNotifications && (
+        <NotificationsModal onClose={() => setShowNotifications(false)} />
       )}
     </div>
   );

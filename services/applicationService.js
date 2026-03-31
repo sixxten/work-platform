@@ -1,34 +1,42 @@
-const  Application = require('../models/Application');
-const  Vacancy = require('../models/Vacancy')
+const Application = require('../models/Application');
+const Vacancy = require('../models/Vacancy')
 const User = require('../models/User')
+const notificationService = require('./notificationService');
 
 class ApplicationService {
     async create(data) {
-        return await Application.create(data);
-    }
-
-    async getByVacancyId(vacancyId, employerId) {
-        const vacancy = await Vacancy.findByPk(vacancyId);
-        if (!vacancy) throw new Error('Vacancy not found');
-        if (vacancy.employerId !== employerId) {
-            throw new Error('You can only view applications for your own vacancies');
-        }
+        const application = await Application.create(data);
         
-        return await Application.findAll({
-            where: { vacancyId },
-            order: [['createdAt', 'DESC']]
-        });
-    }
-
-    async getMyApplications(studentId) {
-        return await Application.findAll({
-            where: { studentId },
-            include: [{
-                model: Vacancy,
-                attributes: ['id', 'title', 'company', 'status']
-            }],
-            order: [['createdAt', 'DESC']]
-        });
+        // Получаем вакансию и студента
+        const vacancy = await Vacancy.findByPk(application.vacancyId);
+        const student = await User.findByPk(application.studentId);
+        
+        // Уведомление для работодателя
+        await notificationService.create(
+            vacancy.employerId,
+            'application_created',
+            'Новый отклик',
+            `${student.email} откликнулся на вашу вакансию "${vacancy.title}"`,
+            {
+                applicationId: application.id,
+                vacancyId: vacancy.id,
+                studentId: student.id
+            }
+        );
+        
+        // Уведомление для студента
+        await notificationService.create(
+            application.studentId,
+            'application_created',
+            'Вы откликнулись на вакансию',
+            `Вы откликнулись на вакансию "${vacancy.title}"`,
+            {
+                applicationId: application.id,
+                vacancyId: vacancy.id
+            }
+        );
+        
+        return application;
     }
 
     async updateStatus(id, status, employerId) {
@@ -41,6 +49,27 @@ class ApplicationService {
         }
         
         await application.update({ status });
+        
+        // Уведомление для студента о смене статуса
+        let statusText = '';
+        switch(status) {
+            case 'accepted': statusText = 'принята'; break;
+            case 'rejected': statusText = 'отклонена'; break;
+            default: statusText = status;
+        }
+        
+        await notificationService.create(
+            application.studentId,
+            'application_status_changed',
+            'Статус отклика изменен',
+            `Статус вашего отклика на вакансию "${vacancy.title}" изменен на "${statusText}"`,
+            {
+                applicationId: application.id,
+                vacancyId: vacancy.id,
+                status
+            }
+        );
+        
         return application;
     }
 }
