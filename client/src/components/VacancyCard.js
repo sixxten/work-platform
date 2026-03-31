@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import vacancyService from "../services/vacancyService";
-import ApplicationsModal from "./ApplicationsModal";
+import ApplicationsModal from "./ApplicationsModal.js";
 
 function VacancyCard({ vacancy, onDeleted }) {
   const [showApplications, setShowApplications] = useState(false);

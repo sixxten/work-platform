@@ -10,6 +10,7 @@ const vacancyRouter = require('./vacancy.routes');
 const studentProfileRouter = require('./studentProfile.routes')
 const applicationRouter = require('./application.routes');
 const notificationRouter = require('./notification.routes');
+const chatRouter = require('./chat.routes');
 
 router.use('/auth', authRouter);
 router.use('/user', userRouter);
@@ -20,5 +21,6 @@ router.use('/vacancies', vacancyRouter);
 router.use('/student-profile', studentProfileRouter)
 router.use('/applications', applicationRouter);
 router.use('/notifications', notificationRouter);
+router.use('/chats', chatRouter);
 
 module.exports = router;

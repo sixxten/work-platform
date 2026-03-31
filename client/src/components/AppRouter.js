@@ -19,7 +19,7 @@ const AppRouter = observer(() => {
   return (
     <Routes>
       <Route path="/" element={<Main />} />
-      <Route path="/login" element={!auth.isAuth ? <AuthPage /> : <Navigate to="/profile" />} />
+      <Route path="/login" element={!auth.isAuth ? <AuthPage /> : <Navigate to="/" />} />
       <Route path="/vacancies/:id" element={<VacancyPage />} />
 
       {auth.isAuth && (

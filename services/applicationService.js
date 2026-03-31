@@ -1,17 +1,18 @@
 const Application = require('../models/Application');
-const Vacancy = require('../models/Vacancy')
-const User = require('../models/User')
+const Vacancy = require('../models/Vacancy');
+const User = require('../models/User');
 const notificationService = require('./notificationService');
+const chatService = require('./chatService');
 
 class ApplicationService {
     async create(data) {
         const application = await Application.create(data);
         
-        // Получаем вакансию и студента
+        await chatService.createChat(application);
+        
         const vacancy = await Vacancy.findByPk(application.vacancyId);
         const student = await User.findByPk(application.studentId);
         
-        // Уведомление для работодателя
         await notificationService.create(
             vacancy.employerId,
             'application_created',
@@ -24,7 +25,6 @@ class ApplicationService {
             }
         );
         
-        // Уведомление для студента
         await notificationService.create(
             application.studentId,
             'application_created',
@@ -39,6 +39,20 @@ class ApplicationService {
         return application;
     }
 
+    // ✅ ДОБАВИТЬ ЭТОТ МЕТОД
+    async getByVacancyId(vacancyId, employerId) {
+        const vacancy = await Vacancy.findByPk(vacancyId);
+        if (!vacancy) throw new Error('Vacancy not found');
+        if (vacancy.employerId !== employerId) {
+            throw new Error('You can only view applications for your own vacancies');
+        }
+        
+        return await Application.findAll({
+            where: { vacancyId },
+            order: [['createdAt', 'DESC']]
+        });
+    }
+
     async updateStatus(id, status, employerId) {
         const application = await Application.findByPk(id);
         if (!application) throw new Error('Application not found');
@@ -50,7 +64,6 @@ class ApplicationService {
         
         await application.update({ status });
         
-        // Уведомление для студента о смене статуса
         let statusText = '';
         switch(status) {
             case 'accepted': statusText = 'принята'; break;

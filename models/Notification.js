@@ -17,7 +17,7 @@ const Notification = sequelize.define("Notification", {
         }
     },
     type: {
-        type: DataTypes.ENUM('application_created', 'application_status_changed'),
+        type: DataTypes.STRING(50),
         allowNull: false
     },
     title: {
