@@ -36,10 +36,6 @@ function MyVacanciesPage() {
     loadVacancies();
   };
 
-  const handleProfileClick = () => {
-    navigate("/profile");
-  };
-
   return (
     <>
       <nav className="navbar navbar-expand-lg sticky-top" style={{ 
@@ -48,9 +44,13 @@ function MyVacanciesPage() {
         boxShadow: "0 2px 10px rgba(0,0,0,0.1)"
       }}>
         <div className="container">
-          <a className="navbar-brand fw-bold text-white"  onClick={() => navigate("/")} style={{ fontSize: "1.5rem" }}>
+          <span 
+            className="navbar-brand fw-bold text-white" 
+            onClick={() => navigate("/")} 
+            style={{ fontSize: "1.5rem", cursor: "pointer" }}
+          >
             Platform
-          </a>
+          </span>
           
           <button 
             className="navbar-toggler" 
@@ -69,34 +69,11 @@ function MyVacanciesPage() {
             <ul className="navbar-nav ms-auto align-items-center gap-3">
               <li className="nav-item">
                 <button
-                  onClick={handleProfileClick}
+                  onClick={() => navigate("/profile")}
                   className="btn btn-outline-light px-4"
                   style={{ borderRadius: "20px" }}
                 >
                   Профиль
-                </button>
-              </li>
-              {auth.user?.role === "employer" && (
-                <li className="nav-item">
-                  <button
-                    onClick={() => navigate("/vacancies")}
-                    className="btn btn-success px-4"
-                    style={{ borderRadius: "20px" }}
-                  >
-                    Мои вакансии
-                  </button>
-                </li>
-              )}
-              <li className="nav-item">
-                <button
-                  onClick={async () => {
-                    await auth.logout();
-                    navigate("/");
-                  }}
-                  className="btn btn-danger px-4"
-                  style={{ borderRadius: "20px" }}
-                >
-                  Выйти
                 </button>
               </li>
             </ul>

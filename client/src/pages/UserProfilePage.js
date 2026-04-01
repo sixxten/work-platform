@@ -105,28 +105,12 @@ const UserProfilePage = observer(() => {
                     >
                         <span className="navbar-toggler-icon" style={{ filter: "invert(1)" }}></span>
                     </button>
-                    
-                    <div className="collapse navbar-collapse" id="navbarNav">
-                        <ul className="navbar-nav ms-auto align-items-center gap-3">
-                            {auth.user?.role === "employer" && (
-                                <li className="nav-item">
-                                    <button
-                                        onClick={() => navigate("/vacancies")}
-                                        className="btn btn-success px-4"
-                                        style={{ borderRadius: "20px" }}
-                                    >
-                                        Мои вакансии
-                                    </button>
-                                </li>
-                            )}
-                        </ul>
-                    </div>
                 </div>
             </nav>
 
             <div className="container py-5">
                 <div className="row justify-content-center">
-                    <div className="col-md-5 mb-4">
+                    <div className={`${auth.user?.role === 'student' ? 'col-md-5' : 'col-md-6'}`}>
                         <div className="card shadow h-100">
                             <div className="card-body d-flex flex-column">
                                 <h3 className="card-title h5 mb-4 text-primary">Информация</h3>
@@ -161,124 +145,119 @@ const UserProfilePage = observer(() => {
                         </div>
                     </div>
 
-                    <div className="col-md-5">
-                        <div className="card shadow h-100">
-                            <div className="card-body d-flex flex-column">
-                                <h3 className="card-title h5 mb-4 text-primary">О себе</h3>
-                                
-                                {auth.user?.role === 'student' ? (
-                                    <>
-                                        {loading ? (
-                                            <div className="text-center py-3">
-                                                <div className="spinner-border text-primary" role="status">
-                                                    <span className="visually-hidden">Загрузка...</span>
-                                                </div>
+                    {/* Правая колонка "О себе" — только для студентов */}
+                    {auth.user?.role === 'student' && (
+                        <div className="col-md-5">
+                            <div className="card shadow h-100">
+                                <div className="card-body d-flex flex-column">
+                                    <h3 className="card-title h5 mb-4 text-primary">О себе</h3>
+                                    
+                                    {loading ? (
+                                        <div className="text-center py-3">
+                                            <div className="spinner-border text-primary" role="status">
+                                                <span className="visually-hidden">Загрузка...</span>
                                             </div>
-                                        ) : editing ? (
-                                            <div>
-                                                <div className="mb-3">
-                                                    <label className="form-label fw-semibold">ФИО</label>
-                                                    <input
-                                                        type="text"
-                                                        className="form-control"
-                                                        value={formData.fullName}
-                                                        onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
-                                                    />
-                                                </div>
-                                                <div className="mb-3">
-                                                    <label className="form-label fw-semibold">Группа</label>
-                                                    <input
-                                                        type="text"
-                                                        className="form-control"
-                                                        value={formData.group}
-                                                        onChange={(e) => setFormData({ ...formData, group: e.target.value })}
-                                                    />
-                                                </div>
-                                                <div className="mb-3">
-                                                    <label className="form-label fw-semibold">Навыки (через запятую)</label>
-                                                    <input
-                                                        type="text"
-                                                        className="form-control"
-                                                        value={formData.skills}
-                                                        onChange={(e) => setFormData({ ...formData, skills: e.target.value })}
-                                                        placeholder="React, JavaScript, Node.js"
-                                                    />
-                                                </div>
-                                                <div className="mb-3">
-                                                    <label className="form-label fw-semibold">Контакты (телефон, Telegram)</label>
-                                                    <input
-                                                        type="text"
-                                                        className="form-control"
-                                                        value={formData.contacts}
-                                                        onChange={(e) => setFormData({ ...formData, contacts: e.target.value })}
-                                                        placeholder="+7 999 123-45-67, @telegram"
-                                                    />
-                                                </div>
-                                                <div className="mb-3">
-                                                    <label className="form-label fw-semibold">О себе</label>
-                                                    <textarea
-                                                        className="form-control"
-                                                        value={formData.about}
-                                                        onChange={(e) => setFormData({ ...formData, about: e.target.value })}
-                                                        rows={4}
-                                                    />
-                                                </div>
-                                                <div className="d-flex gap-2">
-                                                    <button onClick={handleSave} className="btn btn-primary">
-                                                        Сохранить
-                                                    </button>
-                                                    <button onClick={() => setEditing(false)} className="btn btn-secondary">
-                                                        Отмена
-                                                    </button>
-                                                </div>
+                                        </div>
+                                    ) : editing ? (
+                                        <div>
+                                            <div className="mb-3">
+                                                <label className="form-label fw-semibold">ФИО</label>
+                                                <input
+                                                    type="text"
+                                                    className="form-control"
+                                                    value={formData.fullName}
+                                                    onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
+                                                />
                                             </div>
-                                        ) : (
-                                            <div>
-                                                {profile && Object.keys(profile).length > 0 ? (
-                                                    <div>
-                                                        <div className="mb-3">
-                                                            <label className="text-muted small text-uppercase mb-1">ФИО</label>
-                                                            <p className="fw-semibold mb-0">{profile.fullName || '—'}</p>
-                                                        </div>
-                                                        <div className="mb-3">
-                                                            <label className="text-muted small text-uppercase mb-1">Группа</label>
-                                                            <p className="fw-semibold mb-0">{profile.group || '—'}</p>
-                                                        </div>
-                                                        <div className="mb-3">
-                                                            <label className="text-muted small text-uppercase mb-1">Навыки</label>
-                                                            <p className="fw-semibold mb-0">{profile.skills || '—'}</p>
-                                                        </div>
-                                                        <div className="mb-3">
-                                                            <label className="text-muted small text-uppercase mb-1">Контакты</label>
-                                                            <p className="fw-semibold mb-0">{profile.contacts?.phone || '—'}</p>
-                                                        </div>
-                                                        <div className="mb-3">
-                                                            <label className="text-muted small text-uppercase mb-1">О себе</label>
-                                                            <p className="fw-semibold mb-0">{profile.about || '—'}</p>
-                                                        </div>
-                                                        <button onClick={() => setEditing(true)} className="btn btn-outline-primary mt-3">
-                                                            Редактировать
-                                                        </button>
+                                            <div className="mb-3">
+                                                <label className="form-label fw-semibold">Группа</label>
+                                                <input
+                                                    type="text"
+                                                    className="form-control"
+                                                    value={formData.group}
+                                                    onChange={(e) => setFormData({ ...formData, group: e.target.value })}
+                                                />
+                                            </div>
+                                            <div className="mb-3">
+                                                <label className="form-label fw-semibold">Навыки (через запятую)</label>
+                                                <input
+                                                    type="text"
+                                                    className="form-control"
+                                                    value={formData.skills}
+                                                    onChange={(e) => setFormData({ ...formData, skills: e.target.value })}
+                                                    placeholder="React, JavaScript, Node.js"
+                                                />
+                                            </div>
+                                            <div className="mb-3">
+                                                <label className="form-label fw-semibold">Контакты (телефон, Telegram)</label>
+                                                <input
+                                                    type="text"
+                                                    className="form-control"
+                                                    value={formData.contacts}
+                                                    onChange={(e) => setFormData({ ...formData, contacts: e.target.value })}
+                                                    placeholder="+7 999 123-45-67, @telegram"
+                                                />
+                                            </div>
+                                            <div className="mb-3">
+                                                <label className="form-label fw-semibold">О себе</label>
+                                                <textarea
+                                                    className="form-control"
+                                                    value={formData.about}
+                                                    onChange={(e) => setFormData({ ...formData, about: e.target.value })}
+                                                    rows={4}
+                                                />
+                                            </div>
+                                            <div className="d-flex gap-2">
+                                                <button onClick={handleSave} className="btn btn-primary">
+                                                    Сохранить
+                                                </button>
+                                                <button onClick={() => setEditing(false)} className="btn btn-secondary">
+                                                    Отмена
+                                                </button>
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <div>
+                                            {profile && Object.keys(profile).length > 0 ? (
+                                                <div>
+                                                    <div className="mb-3">
+                                                        <label className="text-muted small text-uppercase mb-1">ФИО</label>
+                                                        <p className="fw-semibold mb-0">{profile.fullName || '—'}</p>
                                                     </div>
-                                                ) : (
-                                                    <div className="text-center py-3">
-                                                        <p className="text-muted">Профиль не заполнен</p>
-                                                        <button onClick={() => setEditing(true)} className="btn btn-primary">
-                                                            Заполнить
-                                                        </button>
+                                                    <div className="mb-3">
+                                                        <label className="text-muted small text-uppercase mb-1">Группа</label>
+                                                        <p className="fw-semibold mb-0">{profile.group || '—'}</p>
                                                     </div>
-                                                )}
-                                            </div>
-                                        )}
-                                    </>
-                                ) : auth.user?.role === 'employer' ? (
-                                    <div className="text-center py-5">
-                                        <p className="text-muted">Для работодателей нет дополнительной информации</p>
-                                    </div>
-                                ) : null}
+                                                    <div className="mb-3">
+                                                        <label className="text-muted small text-uppercase mb-1">Навыки</label>
+                                                        <p className="fw-semibold mb-0">{profile.skills || '—'}</p>
+                                                    </div>
+                                                    <div className="mb-3">
+                                                        <label className="text-muted small text-uppercase mb-1">Контакты</label>
+                                                        <p className="fw-semibold mb-0">{profile.contacts?.phone || '—'}</p>
+                                                    </div>
+                                                    <div className="mb-3">
+                                                        <label className="text-muted small text-uppercase mb-1">О себе</label>
+                                                        <p className="fw-semibold mb-0">{profile.about || '—'}</p>
+                                                    </div>
+                                                    <button onClick={() => setEditing(true)} className="btn btn-outline-primary mt-3">
+                                                        Редактировать
+                                                    </button>
+                                                </div>
+                                            ) : (
+                                                <div className="text-center py-3">
+                                                    <p className="text-muted">Профиль не заполнен</p>
+                                                    <button onClick={() => setEditing(true)} className="btn btn-primary">
+                                                        Заполнить
+                                                    </button>
+                                                </div>
+                                            )}
+                                        </div>
+                                    )}
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    )}
                 </div>
             </div>
         </>

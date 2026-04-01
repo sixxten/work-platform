@@ -27,54 +27,76 @@ function VacancyCard({ vacancy, onDeleted }) {
   const specializationName = vacancy.specialization?.name || "Не указана";
 
   return (
-    <div
-      style={{
-        border: "1px solid #ddd",
-        padding: 15,
-        marginBottom: 15,
-        borderRadius: 6,
-        backgroundColor: "#fafafa",
+    <div 
+      className="mb-3" 
+      style={{ 
+        border: "1px solid #e2e8f0",
+        borderRadius: "12px",
+        backgroundColor: "#f8fafc",
+        overflow: "hidden"
       }}
     >
-      <h3 style={{ marginBottom: 8 }}>{title}</h3>
+      <div className="p-4">
+        <div className="d-flex justify-content-between align-items-start mb-3">
+          <h3 className="h4 fw-semibold mb-0" style={{ color: "#0f172a" }}>
+            {title}
+          </h3>
+          <span 
+            className="px-3 py-1 rounded-pill" 
+            style={{ 
+              fontSize: "0.75rem",
+              fontWeight: "500",
+              backgroundColor: "#e2e8f0",
+              color: "#334155"
+            }}
+          >
+            {employmentTypeName}
+          </span>
+        </div>
 
-      <p><strong>Работодатель:</strong> {company}</p>
-      <p><strong>Локация:</strong> {location}</p>
-      <p><strong>Зарплата:</strong> {salary}</p>
-      <p><strong>Описание:</strong> {description}</p>
+        <div className="row mb-3">
+          <div className="col-md-6">
+            <p className="mb-2" style={{ color: "#475569" }}>
+              <span className="fw-semibold" style={{ color: "#1e293b" }}>Компания:</span> {company}
+            </p>
+            <p className="mb-2" style={{ color: "#475569" }}>
+              <span className="fw-semibold" style={{ color: "#1e293b" }}>Локация:</span> {location}
+            </p>
+            <p className="mb-2" style={{ color: "#475569" }}>
+              <span className="fw-semibold" style={{ color: "#1e293b" }}>Зарплата:</span> {salary}
+            </p>
+          </div>
+          <div className="col-md-6">
+            <p className="mb-2" style={{ color: "#475569" }}>
+              <span className="fw-semibold" style={{ color: "#1e293b" }}>Формат работы:</span> {workFormatName}
+            </p>
+            <p className="mb-2" style={{ color: "#475569" }}>
+              <span className="fw-semibold" style={{ color: "#1e293b" }}>Специализация:</span> {specializationName}
+            </p>
+          </div>
+        </div>
 
-      <p><strong>Тип занятости:</strong> {employmentTypeName}</p>
-      <p><strong>Формат работы:</strong> {workFormatName}</p>
-      <p><strong>Специализация:</strong> {specializationName}</p>
+        <p className="mb-4" style={{ color: "#475569" }}>
+          <span className="fw-semibold" style={{ color: "#1e293b" }}>Описание:</span><br />
+          {description}
+        </p>
 
-      <div style={{ marginTop: "10px" }}>
-        <button
-          onClick={() => setShowApplications(true)}
-          style={{
-            padding: "6px 12px",
-            border: "none",
-            backgroundColor: "#007bff",
-            color: "#fff",
-            cursor: "pointer",
-            borderRadius: "4px",
-            marginRight: "10px"
-          }}
-        >
-          Отклики
-        </button>
-        <button
-          onClick={handleDelete}
-          style={{
-            padding: "6px 12px",
-            border: "none",
-            backgroundColor: "#dc3545",
-            color: "#fff",
-            cursor: "pointer",
-            borderRadius: "4px"
-          }}
-        >
-          Удалить
-        </button>
+        <div className="d-flex gap-2">
+          <button
+            onClick={() => setShowApplications(true)}
+            className="btn btn-outline-primary px-4"
+            style={{ borderRadius: "20px", fontSize: "0.9rem" }}
+          >
+            Отклики
+          </button>
+          <button
+            onClick={handleDelete}
+            className="btn btn-outline-danger px-4"
+            style={{ borderRadius: "20px", fontSize: "0.9rem" }}
+          >
+            Удалить
+          </button>
+        </div>
       </div>
 
       {showApplications && (

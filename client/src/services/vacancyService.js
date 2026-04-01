@@ -12,9 +12,9 @@ class VacancyService {
   }
 
   async getMyVacancies() {
-    const { data } = await $authHost.get('/vacancies?employerId=me');
+    const { data } = await $authHost.get('/vacancies/my');
     return data;
-  }
+}
 
   async getById(id) {
     const { data } = await $authHost.get(`/vacancies/${id}`);
@@ -33,6 +33,21 @@ class VacancyService {
 
   async delete(id) {
     const { data } = await $authHost.delete(`/vacancies/${id}`);
+    return data;
+  }
+
+  async getEmploymentTypes() {
+    const { data } = await $host.get('/employment-types');
+    return data;
+  }
+
+  async getWorkFormats() {
+    const { data } = await $host.get('/work-formats');
+    return data;
+  }
+
+  async getSpecializations() {
+    const { data } = await $host.get('/specializations');
     return data;
   }
 }

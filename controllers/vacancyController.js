@@ -98,6 +98,19 @@ class VacancyController {
             res.status(400).json({ message: e.message });
         }
     }
+    // GET /api/vacancies/my
+    async getMyVacancies(req, res) {
+        try {
+            const vacancies = await vacancyService.getByEmployer(
+                req.user.userId,
+                req.user.role,
+                req.user.userId
+            );
+            res.json(vacancies);
+        } catch (e) {
+            res.status(500).json({ message: e.message });
+        }
+    }
 }
 
 module.exports = new VacancyController();

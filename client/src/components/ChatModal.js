@@ -6,7 +6,15 @@ function ChatModal({ chatId, onClose }) {
   const [newMessage, setNewMessage] = useState("");
   const [loading, setLoading] = useState(true);
   const [chat, setChat] = useState(null);
+  const [isVisible, setIsVisible] = useState(false);
   const messagesEndRef = useRef(null);
+  const inputRef = useRef(null);
+
+  useEffect(() => {
+    requestAnimationFrame(() => {
+      setIsVisible(true);
+    });
+  }, []);
 
   useEffect(() => {
     const fetchChat = async () => {
@@ -45,32 +53,40 @@ function ChatModal({ chatId, onClose }) {
       const message = await chatService.sendMessage(chatId, newMessage);
       setMessages([...messages, message]);
       setNewMessage("");
+      inputRef.current?.focus();
     } catch (err) {
       console.error("Ошибка отправки:", err);
     }
   };
 
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    return date.toLocaleString('ru-RU');
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSend();
+    }
   };
 
-  const getAvatar = (senderId) => {
+  const handleClose = () => {
+    setIsVisible(false);
+    setTimeout(onClose, 250);
+  };
+
+  const getAvatarColor = (senderId) => {
+    if (!chat) return "#3b82f6";
+    if (senderId === chat.studentId) return "#10b981";
+    return "#3b82f6";
+  };
+
+  const getInitial = (senderId) => {
     if (!chat) return "?";
     if (senderId === chat.studentId) return "S";
     return "E";
   };
 
-  const getAvatarColor = (senderId) => {
-    if (!chat) return "#6c757d";
-    if (senderId === chat.studentId) return "#28a745";
-    return "#007bff";
-  };
-
   const getSenderName = (senderId) => {
     if (!chat) return "";
-    if (senderId === chat.studentId) return chat.student?.email || "Студент";
-    return chat.employer?.email || "Работодатель";
+    if (senderId === chat.studentId) return "student";
+    return "employer";
   };
 
   if (loading) return (
@@ -80,142 +96,212 @@ function ChatModal({ chatId, onClose }) {
       left: 0,
       right: 0,
       bottom: 0,
-      backgroundColor: "rgba(0,0,0,0.5)",
+      backgroundColor: "rgba(0,0,0,0.4)",
       display: "flex",
       justifyContent: "center",
-      alignItems: "center"
+      alignItems: "center",
+      zIndex: 1050
     }}>
-      <div style={{ backgroundColor: "white", padding: "20px" }}>
-        Загрузка...
+      <div className="spinner-border text-primary" role="status">
+        <span className="visually-hidden">Загрузка...</span>
       </div>
     </div>
   );
 
   return (
-    <div style={{
-      position: "fixed",
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
-      backgroundColor: "rgba(0,0,0,0.5)",
-      display: "flex",
-      justifyContent: "center",
-      alignItems: "center",
-      zIndex: 1000
-    }}>
+    <>
+      <div 
+        style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: "rgba(0,0,0,0.4)",
+          zIndex: 1049,
+          opacity: isVisible ? 1 : 0,
+          transition: "opacity 0.25s ease-out"
+        }}
+        onClick={handleClose}
+      />
+      
       <div style={{
+        position: "fixed",
+        top: 0,
+        right: 0,
+        bottom: 0,
+        width: "450px",
         backgroundColor: "white",
-        padding: "20px",
-        maxWidth: "500px",
-        width: "90%",
-        height: "70vh",
+        boxShadow: "-4px 0 25px rgba(0,0,0,0.15)",
         display: "flex",
         flexDirection: "column",
-        borderRadius: "8px"
+        zIndex: 1050,
+        transform: isVisible ? "translateX(0)" : "translateX(100%)",
+        transition: "transform 0.35s cubic-bezier(0.34, 1.2, 0.64, 1)"
       }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "15px" }}>
-          <h2 style={{ margin: 0 }}>Чат: {chat?.vacancy?.title}</h2>
-          <button onClick={onClose} style={{ fontSize: "20px", cursor: "pointer" }}>✕</button>
+        <div style={{ 
+          padding: "16px 20px", 
+          borderBottom: "1px solid #e9ecef",
+          backgroundColor: "#f8fafc",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center"
+        }}>
+          <h3 style={{ margin: 0, fontSize: "1.1rem", fontWeight: "600", color: "#0f172a" }}>
+            Чат: {chat?.vacancy?.title}
+          </h3>
+          <button
+            onClick={handleClose}
+            style={{
+              background: "none",
+              border: "none",
+              fontSize: "24px",
+              cursor: "pointer",
+              color: "#64748b",
+              padding: "0 8px"
+            }}
+          >
+            ✕
+          </button>
         </div>
-        
-        <div style={{ flex: 1, overflowY: "auto", marginBottom: "10px" }}>
-          {messages.map(msg => {
+
+        <div style={{ 
+          flex: 1, 
+          overflowY: "auto", 
+          padding: "20px",
+          backgroundColor: "#ffffff"
+        }}>
+          {messages.map((msg) => {
             const isCurrentUser = msg.senderId === chatService.getCurrentUserId();
-            const avatar = getAvatar(msg.senderId);
-            const avatarColor = getAvatarColor(msg.senderId);
             
             return (
-              <div key={msg.id} style={{
-                display: "flex",
-                justifyContent: isCurrentUser ? "flex-end" : "flex-start",
-                marginBottom: "15px"
-              }}>
-                {!isCurrentUser && (
-                  <div style={{
-                    width: "40px",
-                    height: "40px",
-                    borderRadius: "50%",
-                    backgroundColor: avatarColor,
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    color: "white",
-                    fontWeight: "bold",
-                    marginRight: "10px",
-                    flexShrink: 0
-                  }}>
-                    {avatar}
-                  </div>
-                )}
-                
+              <div key={msg.id}>
                 <div style={{
-                  maxWidth: "70%"
+                  display: "flex",
+                  justifyContent: isCurrentUser ? "flex-end" : "flex-start",
+                  marginBottom: "12px"
                 }}>
                   {!isCurrentUser && (
-                    <div style={{ fontSize: "12px", color: "#666", marginBottom: "4px" }}>
-                      {getSenderName(msg.senderId)}
+                    <div style={{
+                      width: "36px",
+                      height: "36px",
+                      borderRadius: "50%",
+                      backgroundColor: getAvatarColor(msg.senderId),
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      color: "white",
+                      fontWeight: "bold",
+                      fontSize: "14px",
+                      marginRight: "10px",
+                      flexShrink: 0
+                    }}>
+                      {getInitial(msg.senderId)}
                     </div>
                   )}
+                  
                   <div style={{
-                    backgroundColor: isCurrentUser ? "#007bff" : "#e9ecef",
-                    color: isCurrentUser ? "white" : "black",
-                    padding: "10px 12px",
-                    borderRadius: "12px",
-                    wordWrap: "break-word"
-                  }}>
-                    {msg.content}
-                  </div>
-                  <div style={{ fontSize: "10px", color: "gray", marginTop: "4px", textAlign: isCurrentUser ? "right" : "left" }}>
-                    {formatDate(msg.createdAt)}
-                  </div>
-                </div>
-                
-                {isCurrentUser && (
-                  <div style={{
-                    width: "40px",
-                    height: "40px",
-                    borderRadius: "50%",
-                    backgroundColor: avatarColor,
+                    maxWidth: "70%",
                     display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    color: "white",
-                    fontWeight: "bold",
-                    marginLeft: "10px",
-                    flexShrink: 0
+                    flexDirection: "column",
+                    alignItems: isCurrentUser ? "flex-end" : "flex-start"
                   }}>
-                    {avatar}
+                    {!isCurrentUser && (
+                      <span style={{ fontSize: "0.7rem", color: "#64748b", marginBottom: "4px", marginLeft: "4px" }}>
+                        {getSenderName(msg.senderId)}
+                      </span>
+                    )}
+                    <div style={{
+                      backgroundColor: isCurrentUser ? "#3b82f6" : "#f1f5f9",
+                      color: isCurrentUser ? "white" : "#0f172a",
+                      padding: "10px 14px",
+                      borderRadius: "18px",
+                      borderBottomRightRadius: isCurrentUser ? "4px" : "18px",
+                      borderBottomLeftRadius: !isCurrentUser ? "4px" : "18px",
+                      wordWrap: "break-word"
+                    }}>
+                      {msg.content}
+                    </div>
                   </div>
-                )}
+                  
+                  {isCurrentUser && (
+                    <div style={{
+                      width: "36px",
+                      height: "36px",
+                      borderRadius: "50%",
+                      backgroundColor: getAvatarColor(msg.senderId),
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      color: "white",
+                      fontWeight: "bold",
+                      fontSize: "14px",
+                      marginLeft: "10px",
+                      flexShrink: 0
+                    }}>
+                      {getInitial(msg.senderId)}
+                    </div>
+                  )}
+                </div>
               </div>
             );
           })}
           <div ref={messagesEndRef} />
         </div>
-        
-        <div style={{ display: "flex", gap: "10px" }}>
-          <input
-            type="text"
-            value={newMessage}
-            onChange={(e) => setNewMessage(e.target.value)}
-            onKeyPress={(e) => e.key === 'Enter' && handleSend()}
-            style={{ flex: 1, padding: "10px", borderRadius: "4px", border: "1px solid #ddd" }}
-            placeholder="Введите сообщение..."
-          />
-          <button onClick={handleSend} style={{
-            padding: "10px 20px",
-            backgroundColor: "#007bff",
-            color: "white",
-            border: "none",
-            borderRadius: "4px",
-            cursor: "pointer"
+
+        <div style={{ 
+          padding: "16px 20px", 
+          borderTop: "1px solid #e9ecef",
+          backgroundColor: "#ffffff"
+        }}>
+          <div style={{ 
+            display: "flex", 
+            gap: "12px",
+            alignItems: "flex-end"
           }}>
-            Отправить
-          </button>
+            <textarea
+              ref={inputRef}
+              value={newMessage}
+              onChange={(e) => setNewMessage(e.target.value)}
+              onKeyPress={handleKeyPress}
+              placeholder="Сообщение..."
+              rows={1}
+              style={{
+                flex: 1,
+                padding: "10px 16px",
+                borderRadius: "24px",
+                border: "1px solid #e2e8f0",
+                fontSize: "0.95rem",
+                fontFamily: "inherit",
+                resize: "none",
+                outline: "none",
+                maxHeight: "100px",
+                overflowY: "auto"
+              }}
+              onFocus={(e) => e.target.style.borderColor = "#3b82f6"}
+              onBlur={(e) => e.target.style.borderColor = "#e2e8f0"}
+            />
+            <button
+              onClick={handleSend}
+              disabled={!newMessage.trim()}
+              style={{
+                backgroundColor: newMessage.trim() ? "#3b82f6" : "#cbd5e1",
+                color: "white",
+                border: "none",
+                borderRadius: "40px",
+                padding: "10px 20px",
+                fontSize: "0.9rem",
+                fontWeight: "500",
+                cursor: newMessage.trim() ? "pointer" : "not-allowed",
+                minWidth: "80px"
+              }}
+            >
+              Отправить
+            </button>
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
 

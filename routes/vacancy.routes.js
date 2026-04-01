@@ -5,7 +5,15 @@ const roleMiddleware = require('../middleware/roleMiddleware');
 
 const router = Router();
 
+
 router.get('/', vacancyController.getAll);
+
+router.get('/my', 
+    authMiddleware,
+    roleMiddleware(['employer', 'admin']), 
+    vacancyController.getMyVacancies
+);
+
 router.get('/:id', vacancyController.getById);
 
 router.use(authMiddleware);

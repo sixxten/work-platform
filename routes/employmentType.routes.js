@@ -5,9 +5,8 @@ const roleMiddleware = require('../middleware/roleMiddleware');
 
 const router = Router();
 
-
-router.get('/', authMiddleware, employmentTypeController.getAll);
-router.get('/:id', authMiddleware, employmentTypeController.getById);
+router.get('/', employmentTypeController.getAll);
+router.get('/:id', employmentTypeController.getById);
 
 router.post('/', 
     authMiddleware, 

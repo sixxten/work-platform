@@ -1,11 +1,10 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect} from "react";
 import { observer } from "mobx-react-lite";
-import { Context } from "../index";
 import studentProfileService from "../services/studentProfileService";
 
 const ApplyForm = ({ vacancyId, onClose, onSubmit }) => {
-  const { auth } = useContext(Context);
-  const [profile, setProfile] = useState(null);
+
+  const [setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [formData, setFormData] = useState({
     fullName: "",
@@ -61,7 +60,25 @@ const ApplyForm = ({ vacancyId, onClose, onSubmit }) => {
     await onSubmit(applicationData);
   };
 
-  if (loading) return <div>Загрузка данных...</div>;
+  if (loading) return (
+    <div style={{
+      position: "fixed",
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      backgroundColor: "rgba(0,0,0,0.6)",
+      backdropFilter: "blur(4px)",
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      zIndex: 1050
+    }}>
+      <div className="spinner-border text-primary" role="status">
+        <span className="visually-hidden">Загрузка...</span>
+      </div>
+    </div>
+  );
 
   return (
     <div style={{
@@ -70,88 +87,248 @@ const ApplyForm = ({ vacancyId, onClose, onSubmit }) => {
       left: 0,
       right: 0,
       bottom: 0,
-      backgroundColor: "rgba(0,0,0,0.5)",
+      backgroundColor: "rgba(0,0,0,0.6)",
+      backdropFilter: "blur(4px)",
       display: "flex",
       justifyContent: "center",
-      alignItems: "center"
+      alignItems: "center",
+      zIndex: 1050
     }}>
       <div style={{
         backgroundColor: "white",
-        padding: "20px",
-        maxWidth: "500px",
-        width: "90%"
+        borderRadius: "24px",
+        width: "90%",
+        maxWidth: "550px",
+        maxHeight: "90vh",
+        overflowY: "auto",
+        boxShadow: "0 20px 35px rgba(0,0,0,0.25)"
       }}>
-        <h2>Отклик на вакансию</h2>
+        {/* Заголовок */}
+        <div style={{ 
+          padding: "20px 24px", 
+          borderBottom: "1px solid #e9ecef",
+          backgroundColor: "#f8fafc",
+          borderRadius: "24px 24px 0 0",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center"
+        }}>
+          <h2 style={{ margin: 0, fontSize: "1.3rem", fontWeight: "600", color: "#0f172a" }}>
+            Отклик на вакансию
+          </h2>
+          <button
+            onClick={onClose}
+            style={{
+              background: "none",
+              border: "none",
+              fontSize: "24px",
+              cursor: "pointer",
+              color: "#64748b",
+              padding: "0 4px"
+            }}
+          >
+            ✕
+          </button>
+        </div>
         
-        <form onSubmit={handleSubmit}>
-          <div>
-            <label>ФИО:</label><br />
+        <form onSubmit={handleSubmit} style={{ padding: "24px" }}>
+
+          <div style={{ marginBottom: "20px" }}>
+            <label style={{ display: "block", marginBottom: "6px", fontWeight: "500", color: "#1e293b", fontSize: "0.9rem" }}>
+              ФИО
+            </label>
             <input
               type="text"
               name="fullName"
               value={formData.fullName}
               onChange={handleChange}
               required
+              style={{
+                width: "100%",
+                padding: "12px 16px",
+                borderRadius: "12px",
+                border: "1px solid #e2e8f0",
+                fontSize: "0.95rem",
+                transition: "border-color 0.2s",
+                outline: "none",
+                fontFamily: "inherit"
+              }}
+              onFocus={(e) => e.target.style.borderColor = "#3b82f6"}
+              onBlur={(e) => e.target.style.borderColor = "#e2e8f0"}
             />
           </div>
           
-          <div>
-            <label>Группа:</label><br />
+          <div style={{ marginBottom: "20px" }}>
+            <label style={{ display: "block", marginBottom: "6px", fontWeight: "500", color: "#1e293b", fontSize: "0.9rem" }}>
+              Группа
+            </label>
             <input
               type="text"
               name="group"
               value={formData.group}
               onChange={handleChange}
               required
+              style={{
+                width: "100%",
+                padding: "12px 16px",
+                borderRadius: "12px",
+                border: "1px solid #e2e8f0",
+                fontSize: "0.95rem",
+                transition: "border-color 0.2s",
+                outline: "none",
+                fontFamily: "inherit"
+              }}
+              onFocus={(e) => e.target.style.borderColor = "#3b82f6"}
+              onBlur={(e) => e.target.style.borderColor = "#e2e8f0"}
             />
           </div>
           
-          <div>
-            <label>Навыки (через запятую):</label><br />
+          <div style={{ marginBottom: "20px" }}>
+            <label style={{ display: "block", marginBottom: "6px", fontWeight: "500", color: "#1e293b", fontSize: "0.9rem" }}>
+              Навыки
+            </label>
             <input
               type="text"
               name="skills"
               value={formData.skills}
               onChange={handleChange}
-              placeholder="React, JavaScript, Git"
+              style={{
+                width: "100%",
+                padding: "12px 16px",
+                borderRadius: "12px",
+                border: "1px solid #e2e8f0",
+                fontSize: "0.95rem",
+                transition: "border-color 0.2s",
+                outline: "none",
+                fontFamily: "inherit"
+              }}
+              onFocus={(e) => e.target.style.borderColor = "#3b82f6"}
+              onBlur={(e) => e.target.style.borderColor = "#e2e8f0"}
             />
           </div>
           
-          <div>
-            <label>Контакты:</label><br />
+          <div style={{ marginBottom: "20px" }}>
+            <label style={{ display: "block", marginBottom: "6px", fontWeight: "500", color: "#1e293b", fontSize: "0.9rem" }}>
+              Контакты
+            </label>
             <input
               type="text"
               name="contacts"
               value={formData.contacts}
               onChange={handleChange}
               placeholder="+7 999 123-45-67, @telegram"
+              style={{
+                width: "100%",
+                padding: "12px 16px",
+                borderRadius: "12px",
+                border: "1px solid #e2e8f0",
+                fontSize: "0.95rem",
+                transition: "border-color 0.2s",
+                outline: "none",
+                fontFamily: "inherit"
+              }}
+              onFocus={(e) => e.target.style.borderColor = "#3b82f6"}
+              onBlur={(e) => e.target.style.borderColor = "#e2e8f0"}
             />
           </div>
           
-          <div>
-            <label>О себе:</label><br />
+          <div style={{ marginBottom: "20px" }}>
+            <label style={{ display: "block", marginBottom: "6px", fontWeight: "500", color: "#1e293b", fontSize: "0.9rem" }}>
+              О себе
+            </label>
             <textarea
               name="about"
               value={formData.about}
               onChange={handleChange}
               rows={3}
+              style={{
+                width: "100%",
+                padding: "12px 16px",
+                borderRadius: "12px",
+                border: "1px solid #e2e8f0",
+                fontSize: "0.95rem",
+                transition: "border-color 0.2s",
+                outline: "none",
+                fontFamily: "inherit",
+                resize: "vertical"
+              }}
+              onFocus={(e) => e.target.style.borderColor = "#3b82f6"}
+              onBlur={(e) => e.target.style.borderColor = "#e2e8f0"}
             />
           </div>
           
-          <div>
-            <label>Вопросы/доп информация:</label><br />
+          <div style={{ marginBottom: "24px" }}>
+            <label style={{ display: "block", marginBottom: "6px", fontWeight: "500", color: "#1e293b", fontSize: "0.9rem" }}>
+              Вопросы / дополнительная информация
+            </label>
             <textarea
               name="coverLetter"
               value={formData.coverLetter}
               onChange={handleChange}
               rows={4}
               required
+              style={{
+                width: "100%",
+                padding: "12px 16px",
+                borderRadius: "12px",
+                border: "1px solid #e2e8f0",
+                fontSize: "0.95rem",
+                transition: "border-color 0.2s",
+                outline: "none",
+                fontFamily: "inherit",
+                resize: "vertical"
+              }}
+              onFocus={(e) => e.target.style.borderColor = "#3b82f6"}
+              onBlur={(e) => e.target.style.borderColor = "#e2e8f0"}
             />
           </div>
           
-          <div>
-            <button type="submit">Отправить отклик</button>
-            <button type="button" onClick={onClose}>Отмена</button>
+          <div style={{ display: "flex", gap: "12px", marginTop: "8px" }}>
+            <button
+              type="submit"
+              style={{
+                flex: 1,
+                backgroundColor: "#3b82f6",
+                color: "white",
+                border: "none",
+                borderRadius: "30px",
+                padding: "12px 20px",
+                fontSize: "0.95rem",
+                fontWeight: "500",
+                cursor: "pointer",
+                transition: "background-color 0.2s"
+              }}
+              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = "#2563eb"}
+              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "#3b82f6"}
+            >
+              Отправить отклик
+            </button>
+            <button
+              type="button"
+              onClick={onClose}
+              style={{
+                flex: 1,
+                backgroundColor: "transparent",
+                color: "#64748b",
+                border: "1px solid #e2e8f0",
+                borderRadius: "30px",
+                padding: "12px 20px",
+                fontSize: "0.95rem",
+                fontWeight: "500",
+                cursor: "pointer",
+                transition: "all 0.2s"
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = "#f1f5f9";
+                e.currentTarget.style.borderColor = "#cbd5e1";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = "transparent";
+                e.currentTarget.style.borderColor = "#e2e8f0";
+              }}
+            >
+              Отмена
+            </button>
           </div>
         </form>
       </div>

@@ -5,19 +5,16 @@ import specializationService from "../services/specializationService";
 import employmentTypeService from "../services/employmentTypeService";
 
 function VacancyForm({ onSuccess }) {
-  // поля ввода
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [salary, setSalary] = useState("");
   const [company, setCompany] = useState("");
   const [location, setLocation] = useState("");
 
-  // справочники
   const [workFormats, setWorkFormats] = useState([]);
   const [specializations, setSpecializations] = useState([]);
   const [employmentTypes, setEmploymentTypes] = useState([]);
 
-  // выбранные значения
   const [workFormatId, setWorkFormatId] = useState("");
   const [specializationId, setSpecializationId] = useState("");
   const [employmentTypeId, setEmploymentTypeId] = useState("");
@@ -37,7 +34,7 @@ function VacancyForm({ onSuccess }) {
         setSpecializations(sp);
         setEmploymentTypes(et);
       } catch (err) {
-        console.error("Ошибка при загрузке справочников:", err);
+        console.error("Error", err);
       }
     }
     loadDictionaries();
@@ -48,16 +45,15 @@ function VacancyForm({ onSuccess }) {
     setError("");
 
     const vacancyData = {
-        title,
-        description,
-        salary: salary ? parseInt(salary) : null,
-        company,
-        location,
-        employmentTypeId: employmentTypeId === "" ? 0 : Number(employmentTypeId),
-        workFormatId: workFormatId === "" ? 0 : Number(workFormatId),
-        specializationId: specializationId === "" ? 0 : Number(specializationId),
+      title,
+      description,
+      salary: salary ? parseInt(salary) : null,
+      company,
+      location,
+      employmentTypeId: employmentTypeId ? Number(employmentTypeId) : null,
+      workFormatId: workFormatId ? Number(workFormatId) : null,
+      specializationId: specializationId ? Number(specializationId) : null,
     };
-
 
     try {
       setLoading(true);
@@ -75,102 +71,147 @@ function VacancyForm({ onSuccess }) {
       if (onSuccess) onSuccess();
     } catch (err) {
       console.error(err);
-      setError("Ошибка при создании вакансии");
+      setError(err.response?.data?.message || "Ошибка при создании вакансии");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} style={{ marginTop: 15, marginBottom: 20 }}>
-      <h3>Создать вакансию</h3>
+    <div className="card shadow-sm border-0" style={{ borderRadius: "12px" }}>
+      <div className="card-body p-4">
+        <h4 className="card-title mb-4" style={{ color: "#1e293b" }}>
+          Создание вакансии
+        </h4>
 
-      <input
-        placeholder="Название"
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-        required
-        style={{ display: "block", marginBottom: 10, width: "100%" }}
-      />
+        <form onSubmit={handleSubmit}>
+          <div className="row g-3">
+            <div className="col-12">
+              <label className="form-label fw-semibold">Название вакансии</label>
+              <input
+                type="text"
+                className="form-control"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                required
+              />
+            </div>
 
-      <textarea
-        placeholder="Описание"
-        value={description}
-        onChange={(e) => setDescription(e.target.value)}
-        required
-        style={{ display: "block", marginBottom: 10, width: "100%", height: 80 }}
-      />
+            <div className="col-md-6">
+              <label className="form-label fw-semibold">Компания</label>
+              <input
+                type="text"
+                className="form-control"
+                value={company}
+                onChange={(e) => setCompany(e.target.value)}
+                required
+              />
+            </div>
 
-      <input
-        type="number"
-        placeholder="Зарплата"
-        value={salary}
-        onChange={(e) => setSalary(e.target.value)}
-        style={{ display: "block", marginBottom: 10, width: "100%" }}
-      />
+            <div className="col-md-6">
+              <label className="form-label fw-semibold">Локация</label>
+              <input
+                type="text"
+                className="form-control"
+                value={location}
+                onChange={(e) => setLocation(e.target.value)}
+              />
+            </div>
 
-      <input
-        placeholder="Компания"
-        value={company}
-        onChange={(e) => setCompany(e.target.value)}
-        style={{ display: "block", marginBottom: 10, width: "100%" }}
-      />
+            <div className="col-md-6">
+              <label className="form-label fw-semibold">Зарплата (₽)</label>
+              <input
+                type="number"
+                className="form-control"
+                placeholder="0"
+                value={salary}
+                onChange={(e) => setSalary(e.target.value)}
+              />
+            </div>
 
-      <input
-        placeholder="Локация"
-        value={location}
-        onChange={(e) => setLocation(e.target.value)}
-        style={{ display: "block", marginBottom: 10, width: "100%" }}
-      />
+            <div className="col-md-6">
+              <label className="form-label fw-semibold">Формат работы</label>
+              <select
+                className="form-select"
+                value={workFormatId}
+                onChange={(e) => setWorkFormatId(e.target.value)}
+                required
+              >
+                <option value="">Выбрать</option>
+                {workFormats.map((f) => (
+                  <option key={f.id} value={f.id}>
+                    {f.name}
+                  </option>
+                ))}
+              </select>
+            </div>
 
-      <label>Формат работы:</label>
-      <select
-        value={workFormatId}
-        onChange={(e) => setWorkFormatId(e.target.value)}
-        style={{ display: "block", marginBottom: 10, width: "100%" }}
-      >
-        <option value="">Не указан</option>
-        {workFormats.map((f) => (
-          <option key={f.id} value={f.id}>
-            {f.name}
-          </option>
-        ))}
-      </select>
+            <div className="col-md-6">
+              <label className="form-label fw-semibold">Тип занятости</label>
+              <select
+                className="form-select"
+                value={employmentTypeId}
+                onChange={(e) => setEmploymentTypeId(e.target.value)}
+                required
+              >
+                <option value="">Выбрать</option>
+                {employmentTypes.map((t) => (
+                  <option key={t.id} value={t.id}>
+                    {t.name}
+                  </option>
+                ))}
+              </select>
+            </div>
 
-      <label>Тип занятости:</label>
-      <select
-        value={employmentTypeId}
-        onChange={(e) => setEmploymentTypeId(e.target.value)}
-        style={{ display: "block", marginBottom: 10, width: "100%" }}
-      >
-        <option value="">Не указан</option>
-        {employmentTypes.map((t) => (
-          <option key={t.id} value={t.id}>
-            {t.name}
-          </option>
-        ))}
-      </select>
+            <div className="col-md-6">
+              <label className="form-label fw-semibold">Специализация</label>
+              <select
+                className="form-select"
+                value={specializationId}
+                onChange={(e) => setSpecializationId(e.target.value)}
+                required
+              >
+                <option value="">Выбрать</option>
+                {specializations.map((s) => (
+                  <option key={s.id} value={s.id}>
+                    {s.name}
+                  </option>
+                ))}
+              </select>
+            </div>
 
-      <label>Специализация:</label>
-      <select
-        value={specializationId}
-        onChange={(e) => setSpecializationId(e.target.value)}
-        style={{ display: "block", marginBottom: 10, width: "100%" }}
-      >
-        <option value="">Не указана</option>
-        {specializations.map((s) => (
-          <option key={s.id} value={s.id}>
-            {s.name}
-          </option>
-        ))}
-      </select>
-
-      {error && <p style={{ color: "red" }}>{error}</p>}
-
-      <button type="submit" disabled={loading}>
-        {loading ? "Создание..." : "Создать"}
-      </button>
-    </form>
+            <div className="col-12">
+              <label className="form-label fw-semibold">Описание вакансии *</label>
+              <textarea
+                className="form-control"
+                rows={5}
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                required
+              />
+            </div>
+            
+            <div className="col-12 mt-3">
+              <button
+                type="submit"
+                className="btn btn-primary px-4"
+                disabled={loading}
+                style={{ borderRadius: "25px" }}
+              >
+                {loading ? (
+                  <>
+                    <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                    Создание...
+                  </>
+                ) : (
+                  "Создать вакансию"
+                )}
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
   );
 }
 
