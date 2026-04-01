@@ -39,7 +39,6 @@ class ApplicationService {
         return application;
     }
 
-    // ✅ ДОБАВИТЬ ЭТОТ МЕТОД
     async getByVacancyId(vacancyId, employerId) {
         const vacancy = await Vacancy.findByPk(vacancyId);
         if (!vacancy) throw new Error('Vacancy not found');

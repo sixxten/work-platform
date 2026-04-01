@@ -2,6 +2,7 @@ import React, { createContext } from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
 import AuthStore from './store/authStore';
+import 'bootstrap/dist/css/bootstrap.min.css'; 
 
 export const Context = createContext(null);
 

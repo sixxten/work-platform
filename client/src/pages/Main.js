@@ -70,145 +70,117 @@ const Main = () => {
   };
 
   return (
-    <div style={{ padding: "30px", backgroundColor: "#f8f9fa", minHeight: "100vh" }}>
-      <div
-        style={{
-          marginBottom: "20px",
-          display: "flex",
-          gap: "10px",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <button
-          onClick={handleProfileClick}
-          style={{
-            padding: "10px 20px",
-            fontSize: "16px",
-            cursor: "pointer",
-            backgroundColor: "#007bff",
-            color: "#fff",
-            border: "none",
-            borderRadius: "5px",
-          }}
-        >
-          {auth.isAuth ? "Профиль" : "Авторизоваться"}
-        </button>
-
-        {auth.isAuth && auth.user?.role === "employer" && (
-          <button
-            onClick={() => navigate("/vacancies")}
-            style={{
-              padding: "10px 20px",
-              fontSize: "16px",
-              cursor: "pointer",
-              backgroundColor: "#28a745",
-              color: "#fff",
-              border: "none",
-              borderRadius: "5px",
-            }}
+    <>
+      <nav className="navbar navbar-expand-lg sticky-top" style={{ 
+        backgroundColor: "rgba(102, 126, 234, 0.9)",
+        backdropFilter: "blur(10px)",
+        boxShadow: "0 2px 10px rgba(0,0,0,0.1)"
+      }}>
+        <div className="container">
+          <a className="navbar-brand fw-bold text-white" href="#" onClick={() => navigate("/")} style={{ fontSize: "1.5rem" }}>
+            Platform
+          </a>
+          
+          <button 
+            className="navbar-toggler" 
+            type="button" 
+            data-bs-toggle="collapse" 
+            data-bs-target="#navbarNav" 
+            aria-controls="navbarNav" 
+            aria-expanded="false" 
+            aria-label="Toggle navigation"
+            style={{ borderColor: "rgba(255,255,255,0.5)" }}
           >
-            Мои вакансии
+            <span className="navbar-toggler-icon" style={{ filter: "invert(1)" }}></span>
           </button>
-        )}
+          
+          <div className="collapse navbar-collapse" id="navbarNav">
+            <ul className="navbar-nav ms-auto align-items-center gap-2">
+              <li className="nav-item">
+                <button
+                  onClick={handleProfileClick}
+                  className="btn btn-outline-light px-3"
+                  style={{ borderRadius: "20px" }}
+                >
+                  {auth.isAuth ? "Профиль" : "Авторизоваться"}
+                </button>
+              </li>
 
-        {auth.isAuth && (
-          <button
-            onClick={() => setShowNotifications(true)}
-            style={{
-              padding: "10px 20px",
-              fontSize: "16px",
-              cursor: "pointer",
-              backgroundColor: "#6c757d",
-              color: "#fff",
-              border: "none",
-              borderRadius: "5px",
-              position: "relative",
-            }}
-          >
-            Уведомления
-            {unreadCount > 0 && (
-              <span
-                style={{
-                  position: "absolute",
-                  top: "-5px",
-                  right: "-5px",
-                  backgroundColor: "red",
-                  color: "white",
-                  borderRadius: "50%",
-                  padding: "2px 6px",
-                  fontSize: "12px",
-                }}
-              >
-                {unreadCount}
-              </span>
-            )}
-          </button>
-        )}
+              {auth.isAuth && auth.user?.role === "employer" && (
+                <li className="nav-item">
+                  <button
+                    onClick={() => navigate("/vacancies")}
+                    className="btn btn-success px-3"
+                    style={{ borderRadius: "20px" }}
+                  >
+                    Мои вакансии
+                  </button>
+                </li>
+              )}
+              {auth.isAuth && (
+                <li className="nav-item position-relative">
+                  <button
+                    onClick={() => setShowNotifications(true)}
+                    className="btn btn-outline-light position-relative px-3"
+                    style={{ borderRadius: "20px" }}
+                  >
+                    Уведомления
+                    {unreadCount > 0 && (
+                      <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                        {unreadCount}
+                      </span>
+                    )}
+                  </button>
+                </li>
+              )}
 
-        {auth.isAuth && auth.user?.role === "student" && (
-          <button
-            onClick={() => setShowChats(true)}
-            style={{
-              padding: "10px 20px",
-              fontSize: "16px",
-              cursor: "pointer",
-              backgroundColor: "#17a2b8",
-              color: "#fff",
-              border: "none",
-              borderRadius: "5px",
-              position: "relative",
-            }}
-          >
-            Чаты
-            {unreadMessagesCount > 0 && (
-              <span
-                style={{
-                  position: "absolute",
-                  top: "-5px",
-                  right: "-5px",
-                  backgroundColor: "red",
-                  color: "white",
-                  borderRadius: "50%",
-                  padding: "2px 6px",
-                  fontSize: "12px",
-                }}
-              >
-                {unreadMessagesCount}
-              </span>
-            )}
-          </button>
+              {auth.isAuth && auth.user?.role === "student" && (
+                <li className="nav-item position-relative">
+                  <button
+                    onClick={() => setShowChats(true)}
+                    className="btn btn-outline-light position-relative px-3"
+                    style={{ borderRadius: "20px" }}
+                  >
+                    Чаты
+                    {unreadMessagesCount > 0 && (
+                      <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                        {unreadMessagesCount}
+                      </span>
+                    )}
+                  </button>
+                </li>
+              )}
+            </ul>
+          </div>
+        </div>
+      </nav>
+
+      <div className="container py-5">
+        <h1 className="text-center mb-5" style={{ color: "#333" }}>Вакансии</h1>
+
+        {loading ? (
+          <div className="text-center py-5">
+            <div className="spinner-border text-primary" role="status">
+              <span className="visually-hidden">Загрузка...</span>
+            </div>
+          </div>
+        ) : vacancies.length === 0 ? (
+          <div className="text-center py-5 text-muted">
+            Нет вакансий
+          </div>
+        ) : (
+          <div className="row g-4 justify-content-center">
+            {vacancies.map((vacancy) => (
+              <div key={vacancy.id} className="col-md-4 col-lg-3">
+                <VacancyMainCard
+                  vacancy={vacancy}
+                  onClick={(id) => navigate(`/vacancies/${id}`)}
+                />
+              </div>
+            ))}
+          </div>
         )}
       </div>
-
-      <h1 style={{ textAlign: "center", marginBottom: "30px", color: "#333" }}>Вакансии</h1>
-
-      {loading ? (
-        <div style={{ textAlign: "center", marginTop: 50 }}>Загрузка...</div>
-      ) : vacancies.length === 0 ? (
-        <div style={{ textAlign: "center", marginTop: 50 }}>
-          Нет вакансий
-        </div>
-      ) : (
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
-            gap: "25px",
-            justifyItems: "center",
-            maxWidth: "1200px",
-            margin: "0 auto",
-          }}
-        >
-          {vacancies.map((vacancy) => (
-            <VacancyMainCard
-              key={vacancy.id}
-              vacancy={vacancy}
-              onClick={(id) => navigate(`/vacancies/${id}`)}
-            />
-          ))}
-        </div>
-      )}
 
       {showNotifications && (
         <NotificationsModal onClose={() => setShowNotifications(false)} />
@@ -216,88 +188,61 @@ const Main = () => {
 
       {showChats && (
         <div
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            backgroundColor: "rgba(0,0,0,0.5)",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            zIndex: 1000,
-          }}
+          className="modal show d-block"
+          tabIndex="-1"
+          style={{ backgroundColor: "rgba(0,0,0,0.5)", zIndex: 1050 }}
         >
-          <div
-            style={{
-              backgroundColor: "white",
-              padding: "20px",
-              maxWidth: "400px",
-              width: "90%",
-              maxHeight: "80vh",
-              overflowY: "auto",
-              borderRadius: "8px",
-            }}
-          >
-            <h2>Мои чаты</h2>
-
-            {chats.length === 0 ? (
-              <p>Чтобы взаимодействовать с работодателем, нужно подать заявку</p>
-            ) : (
-              chats.map((chat) => (
-                <div
-                  key={chat.id}
-                  style={{
-                    border: "1px solid #ddd",
-                    padding: "10px",
-                    marginBottom: "10px",
-                    borderRadius: "6px",
-                    cursor: "pointer",
-                    backgroundColor: chat.unreadCount > 0 ? "#fff3cd" : "white",
-                  }}
-                  onClick={() => setSelectedChat(chat.id)}
-                >
-                  <strong>{chat.vacancy?.title}</strong>
-                  <p style={{ margin: "5px 0" }}>{chat.vacancy?.company}</p>
-                  {chat.lastMessage && (
-                    <small style={{ color: "#666" }}>
-                      {chat.lastMessage.length > 50 ? chat.lastMessage.substring(0, 50) + "..." : chat.lastMessage}
-                    </small>
-                  )}
-                  {chat.unreadCount > 0 && (
-                    <span
-                      style={{
-                        display: "inline-block",
-                        marginLeft: "10px",
-                        backgroundColor: "red",
-                        color: "white",
-                        borderRadius: "50%",
-                        padding: "2px 6px",
-                        fontSize: "12px",
-                      }}
+          <div className="modal-dialog modal-dialog-centered">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title">Мои чаты</h5>
+                <button
+                  type="button"
+                  className="btn-close"
+                  onClick={() => setShowChats(false)}
+                ></button>
+              </div>
+              <div className="modal-body" style={{ maxHeight: "70vh", overflowY: "auto" }}>
+                {chats.length === 0 ? (
+                  <p className="text-muted text-center">
+                    Чтобы взаимодействовать с работодателем, нужно подать заявку
+                  </p>
+                ) : (
+                  chats.map((chat) => (
+                    <div
+                      key={chat.id}
+                      className={`card mb-2 ${chat.unreadCount > 0 ? "border-warning" : ""}`}
+                      style={{ cursor: "pointer" }}
+                      onClick={() => setSelectedChat(chat.id)}
                     >
-                      {chat.unreadCount}
-                    </span>
-                  )}
-                </div>
-              ))
-            )}
-
-            <button
-              onClick={() => setShowChats(false)}
-              style={{
-                marginTop: "15px",
-                padding: "8px 16px",
-                backgroundColor: "#6c757d",
-                color: "white",
-                border: "none",
-                borderRadius: "4px",
-                cursor: "pointer",
-              }}
-            >
-              Закрыть
-            </button>
+                      <div className="card-body">
+                        <h6 className="card-title">{chat.vacancy?.title}</h6>
+                        <p className="card-text small text-muted">{chat.vacancy?.company}</p>
+                        {chat.lastMessage && (
+                          <small className="text-secondary">
+                            {chat.lastMessage.length > 50
+                              ? chat.lastMessage.substring(0, 50) + "..."
+                              : chat.lastMessage}
+                          </small>
+                        )}
+                        {chat.unreadCount > 0 && (
+                          <span className="badge bg-danger float-end">{chat.unreadCount}</span>
+                        )}
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+              <div className="modal-footer">
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  onClick={() => setShowChats(false)}
+                >
+                  Закрыть
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       )}
@@ -305,7 +250,7 @@ const Main = () => {
       {selectedChat && (
         <ChatModal chatId={selectedChat} onClose={() => setSelectedChat(null)} />
       )}
-    </div>
+    </>
   );
 };
 
