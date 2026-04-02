@@ -243,9 +243,6 @@ const Main = () => {
                               </span>
                             )}
                           </div>
-                          <p className="text-muted small mb-2" style={{ fontSize: "0.85rem", color: "#64748b" }}>
-                            {chat.vacancy?.company}
-                          </p>
                           {chat.lastMessage && (
                             <p className="mb-0 text-secondary" style={{ fontSize: "0.85rem", color: "#475569", marginTop: "8px" }}>
                               <span className="fw-medium">Последнее сообщение:</span>{" "}
